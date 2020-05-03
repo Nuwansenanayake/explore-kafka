@@ -1,0 +1,34 @@
+Start Kafka server
+    cd /home/nuwans/Documents/workspace/rAndD/telco/kafka/kafka-server/kafka_2.12-2.4.1/
+    ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+	./bin/kafka-server-start.sh ./config/server.properties
+
+create consumer
+ 	./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-kafka-left-stream-topic --property print.key=true --property print.timestamp=true
+ 	./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-kafka-right-stream-topic --property print.key=true --property print.timestamp=true
+ 	./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-kafka-stream-stream-inner-join-out --property print.key=true --property print.timestamp=true
+
+=========================
+
+TEST 01 - same msg to both topics
+    http://localhost:8080/sendMessages2/
+        output to q1
+            CreateTime:1588414164233	1	{"id":1,"name":"nuwan","category":"home"}
+    http://localhost:8080/sendMessages3/
+        output to q2
+            CreateTime:1588414164233	1	{"id":1,"name":"nuwan","category":"home"}
+    http://localhost:8080/sendMessages3a/
+        output to q2
+            CreateTime:1588414164233	1	{"id":1,"name":"chamara","category":"office"}
+    http://localhost:8080/startStreamStreamInnerJoin2/
+        output
+            CreateTime:1588432962622	nuwan	{"id":1,"name":"nuwan","category":"home"}
+
+TEST 02 - auto
+    http://localhost:8080/startStreamStreamInnerJoin3Auto/
+        output
+        q1    CreateTime:1588499128481	1	{"id":1,"name":"nuwan","category":"home"}
+        q2    CreateTime:1588499128481	1	{"id":1,"name":"chamara","category":"office"}
+        output
+        q3   CreateTime:1588499128481	1	{"id":1,"name":"chamara","category":"home"}
+
